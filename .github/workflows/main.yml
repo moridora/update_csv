@@ -16,18 +16,19 @@ jobs:
 
       - name: Replace CSV File with New Data
         run: |
-          # ペイロードから csv_data を取得し、data.csv に出力する
-          echo "${{ github.event.client_payload.csv_data }}" > data.csv
-          echo "data.csv を新しい CSV データで上書きした。"
+          mkdir -p folder
+          # ペイロードから csv_data を取得し、folder/data.csv に出力する
+          echo "${{ github.event.client_payload.csv_data }}" > folder/data.csv
+          echo "folder/data.csv を新しい CSV データで上書きした。"
 
       - name: Commit and Push CSV Update
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add data.csv
+          git add folder/data.csv
           # 変更があればコミットし、なければそのまま終了する
           if git diff --cached --quiet; then
-            echo "data.csv に変更はなかった。"
+            echo "folder/data.csv に変更はなかった。"
           else
             git commit -m "Update CSV file from spreadsheet update [skip ci]"
             git push origin HEAD
