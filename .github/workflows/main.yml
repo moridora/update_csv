@@ -1,0 +1,33 @@
+# .github/workflows/update_csv.yml
+name: Update CSV from Spreadsheet
+
+on:
+  repository_dispatch:
+    types: [spreadsheet_updated]
+
+jobs:
+  update_csv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Replace CSV File with New Data
+        run: |
+          # ペイロードから csv_data を取得し、data.csv に出力する
+          echo "${{ github.event.client_payload.csv_data }}" > data.csv
+          echo "data.csv を新しい CSV データで上書きした。"
+
+      - name: Commit and Push CSV Update
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data.csv
+          # 変更があればコミットし、なければそのまま終了する
+          if git diff --cached --quiet; then
+            echo "data.csv に変更はなかった。"
+          else
+            git commit -m "Update CSV file from spreadsheet update [skip ci]"
+            git push origin HEAD
