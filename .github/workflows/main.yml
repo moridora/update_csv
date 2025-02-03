@@ -19,7 +19,7 @@ jobs:
           mkdir -p folder
           # ペイロードから csv_data を取得し、folder/data.csv に出力する
           echo "${{ github.event.client_payload.csv_data }}" > folder/data.csv
-          echo "folder/data.csv を新しい CSV データで上書きした。"
+          echo "folder/data.csv を新しい CSV データで上書き。"
 
       - name: Commit and Push CSV Update
         run: |
@@ -32,3 +32,4 @@ jobs:
           else
             git commit -m "Update CSV file from spreadsheet update [skip ci]"
             git push origin HEAD
+          fi
